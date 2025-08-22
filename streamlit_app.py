@@ -32,34 +32,31 @@ answers = [
     "브론즈",
     "실버",
     "챌린저"
-
 ]
 
 if "answer" not in st.session_state:
     st.session_state["answer"] = ""
+if "clicked" not in st.session_state:
+    st.session_state["clicked"] = False
 
-def generate_answer():
-    question = st.session_state["question_input"].strip()
-    if question != "":
+question = st.text_input("궁금한 점을 입력하세요", placeholder="여기에 질문을 써 주세요.", key="question_input")
+
+def on_click():
+    if st.session_state["question_input"].strip() != "":
         st.session_state["answer"] = random.choice(answers)
     else:
         st.session_state["answer"] = "질문을 입력해주세요."
+    st.session_state["clicked"] = True
 
-# 질문 입력창에 on_change 활용
-st.text_input("궁금한 점을 입력하세요", key="question_input", on_change=generate_answer, placeholder="여기에 질문을 써 주세요.")
+st.button("질문하기", on_click=on_click)
 
-# 질문하기 버튼도 동일 기능 (엔터 못 누르는 상황 대비)
-if st.button("질문하기"):
-    generate_answer()
-
-# 대답칸 (크게)
-if st.session_state["answer"]:
+if st.session_state["clicked"]:
     st.markdown(
         f"<div style='font-size: 2em; font-weight: bold; color: #4169e1; margin: 30px 0;'>{st.session_state['answer']}</div>",
         unsafe_allow_html=True
     )
 else:
     st.markdown(
-        "<div style='height: 2em; margin: 30px 0;'></div>",  # 빈 공간 유지
+        "<div style='height: 2em; margin: 30px 0;'></div>",
         unsafe_allow_html=True
     )
